@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <body>
+
+<canvas id="canvas" width="700" height="700" style="border:1px solid #000;"></canvas>
+    
+  <script> "use strict"
+window.onload = function() {
+  //Variables representing the canvas and the canvas' context (the context is used for actually drawing on the canvas)
+  var canvas = document.getElementById("canvas");
+  var context = canvas.getContext("2d");
+  var radius_increase = true;
+
+			
+  //The ball that serves as planets and moons
+  //http://jsfiddle.net/wY8d7/1/
+  var ball = {
+	      x:canvas.width/2, //the x location of the ball
+              y:canvas.height/2, //the y location of the ball
+			  radius: 25, //the radius of the ball
+			  fillColor: "red", //what color should the ball be
+			  strokeColor:"grey", //what color should the outline of the ball be
+			  velocity_x:2, //how fast the ball will move in the x direction
+			  velocity_y:1}; //how fast the ball will move in the y direction
+
+  var moon = {
+	      x:canvas.width/2, //the x location of the ball
+              y:canvas.height/2, //the y location of the ball
+			  radius: 10, //the radius of the ball
+			  fillColor: "grey", //what color should the ball be
+			  strokeColor:"grey", //what color should the outline of the ball be
+			  velocity_x:2, //how fast the ball will move in the x direction
+			  velocity_y:1}; //how fast the ball will move in the y direction
+			
+  //draw the first frame
+  requestAnimationFrame(mainLoop);
+			
+  //Game/simulation Loop
+  function mainLoop() {
+    //processInput(); //in this simple example, we don't have any input to process
+	update();
+	draw();
+				
+	requestAnimationFrame(mainLoop);
+  }
+  
+  function update() {
+    //update position based on velocity
+
+    ball.x = ball.x + ball.velocity_x;
+    ball.y = ball.y + ball.velocity_y;
+    //shrinks or expands moon radius
+    if (radius_increase == true){
+	moon.radius = moon.radius + 0.04;
+	}
+    if (radius_increase == false){
+	moon.radius = moon.radius - 0.04;
+	}
+		
+    //make the ball bounce off the walls
+    //Reverses wheather moon is shrinking or expanding
+	if (ball.x > canvas.width) {
+      ball.velocity_x = -ball.velocity_x; //ball.velocity_x *= -1;
+	if (radius_increase == true){
+            radius_increase = false;
+        }else {
+            radius_increase = true;
+	}
+
+	}
+				
+	if (ball.x < 0) {
+      ball.velocity_x = -ball.velocity_x;
+	if (radius_increase == true){
+            radius_increase = false;
+        }else {
+            radius_increase = true;
+	}
+	}
+				
+	if (ball.y > canvas.height) {
+      ball.velocity_y = -ball.velocity_y;
+	if (radius_increase == true){
+            radius_increase = false;
+        }else {
+            radius_increase = true;
+	}
+	}
+				
+	if (ball.y < 0) {
+      ball.velocity_y = - ball.velocity_y;
+	if (radius_increase == true){
+            radius_increase = false;
+        }else {
+            radius_increase = true;
+	}
+	}	
+  }
+  
+  function draw() {			
+    //clear our drawing
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    context.save();
+
+    //make canvas background black
+    context.fillStyle = "black";
+    context.fillRect(0,0,canvas.width,canvas.height);
+
+    context.translate(ball.x, ball.y);
+
+    //draw ball
+    context.beginPath();
+    context.arc(0, 0, ball.radius, 0, 2 * Math.PI, false);
+    context.fillStyle = ball.fillColor;
+	context.fill();
+	context.lineWidth = 1;
+	context.strokeStyle = ball.strokeColor;
+	context.stroke();
+
+    //draw orbit line 
+    context.strokeStyle   =   "white"; 
+    context.beginPath();
+    context.arc(0, 0, 60, 0, Math.PI * 2); 
+    context.stroke();
+
+    //context.translate(ball.x, ball.y);
+    //context.rotate( 10 * Math.PI / 180);
+    //context.translate(-ball.x, -ball.y);
+
+    //draw the moon
+    context.beginPath();
+    context.arc(0, 60, moon.radius, 0, 2 * Math.PI);
+    context.fillStyle = moon.fillColor;
+	context.fill();
+	context.lineWidth = 1;
+	context.strokeStyle = ball.strokeColor;
+	context.stroke();
+
+    context.restore();
+  }
+};
+  </script>
+
+</body>
+</html>
