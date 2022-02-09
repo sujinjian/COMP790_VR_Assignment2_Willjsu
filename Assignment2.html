@@ -2,7 +2,7 @@
 <html>
   <body>
 
-<canvas id="canvas" width="700" height="700" style="border:1px solid #000;"></canvas>
+<canvas id="canvas" width="1900" height="1000" style="border:1px solid #000;"></canvas>
     
   <script> "use strict"
 window.onload = function() {
@@ -10,6 +10,7 @@ window.onload = function() {
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
   var radius_increase = true;
+  var rotation = 0;
 
 			
   //The ball that serves as planets and moons
@@ -17,7 +18,7 @@ window.onload = function() {
   var ball = {
 	      x:canvas.width/2, //the x location of the ball
               y:canvas.height/2, //the y location of the ball
-			  radius: 25, //the radius of the ball
+			  radius: 67, //the radius of the ball
 			  fillColor: "red", //what color should the ball be
 			  strokeColor:"grey", //what color should the outline of the ball be
 			  velocity_x:2, //how fast the ball will move in the x direction
@@ -49,12 +50,18 @@ window.onload = function() {
 
     ball.x = ball.x + ball.velocity_x;
     ball.y = ball.y + ball.velocity_y;
+    rotation = rotation + 0.5;
+    if (rotation > 360){
+	rotation = 0;
+	}
+
     //shrinks or expands moon radius
+    //Set to "0" to not shrink or expand
     if (radius_increase == true){
-	moon.radius = moon.radius + 0.04;
+	moon.radius = moon.radius + 0;
 	}
     if (radius_increase == false){
-	moon.radius = moon.radius - 0.04;
+	moon.radius = moon.radius - 0;
 	}
 		
     //make the ball bounce off the walls
@@ -109,7 +116,7 @@ window.onload = function() {
 
     context.translate(ball.x, ball.y);
 
-    //draw ball
+    //draw Mars
     context.beginPath();
     context.arc(0, 0, ball.radius, 0, 2 * Math.PI, false);
     context.fillStyle = ball.fillColor;
@@ -118,24 +125,43 @@ window.onload = function() {
 	context.strokeStyle = ball.strokeColor;
 	context.stroke();
 
-    //draw orbit line 
-    context.strokeStyle   =   "white"; 
+    //draw Phobos orbit line 
+    context.strokeStyle = "white"; 
     context.beginPath();
-    context.arc(0, 0, 60, 0, Math.PI * 2); 
+    context.arc(0, 0, 90, 0, Math.PI * 2); 
     context.stroke();
 
-    //context.translate(ball.x, ball.y);
-    //context.rotate( 10 * Math.PI / 180);
-    //context.translate(-ball.x, -ball.y);
+    //rotate Phobos
+    context.rotate( rotation * Math.PI / 180);
 
-    //draw the moon
+    //draw Phobos moon
     context.beginPath();
-    context.arc(0, 60, moon.radius, 0, 2 * Math.PI);
+    context.arc(0, 90, 10, 0, 2 * Math.PI);
     context.fillStyle = moon.fillColor;
 	context.fill();
 	context.lineWidth = 1;
 	context.strokeStyle = ball.strokeColor;
 	context.stroke();
+
+   
+    //draw Deimos orbit line 
+    context.strokeStyle = "white"; 
+    context.beginPath();
+    context.arc(0, 0, 260, 0, Math.PI * 2); 
+    context.stroke();
+
+    //rotate Deimos
+    context.rotate(rotation * Math.PI / 180);
+
+    //draw Deimos moon
+    context.beginPath();
+    context.arc(0, 260, 5, 0, 2 * Math.PI);
+    context.fillStyle = moon.fillColor;
+	context.fill();
+	context.lineWidth = 1;
+	context.strokeStyle = ball.strokeColor;
+	context.stroke();
+
 
     context.restore();
   }
